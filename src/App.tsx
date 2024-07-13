@@ -1,26 +1,29 @@
-import { useTodosQuery } from "./api/query";
+import { useCallback } from "react";
 import Todo from "./todo";
+import { useTodos } from "./zustand";
+import AddTodos from "./zustand/addTodos";
 
 function App() {
-  const { data, isSuccess, isError } = useTodosQuery();
+  const { todos, loading, toggleComplate, addTodo } = useTodos();
 
-  if (isError) {
+  const toggleComplateLocal = useCallback((id:number)=>{
+    toggleComplate(id)
+  }, [toggleComplate])
+
+  if (loading) {
     return (
-        <p>Error...</p>
+        <p>loading...</p>
     );
   }
 
   return (
     <>
-      {isSuccess ? (
-        <div>
-          {data.map((todo) => (
-            <Todo key={todo.id} todo={todo} />
-          ))}
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+      <AddTodos addTodo={addTodo}/>
+      <div>
+        {todos.map((todo) => (
+          <Todo key={todo.id} todo={todo} toggleComplate={toggleComplateLocal}/>
+        ))}
+      </div>
     </>
   ); 
 }
