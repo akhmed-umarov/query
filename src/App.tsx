@@ -1,12 +1,28 @@
-export const BASE_URL = 'https://jsonplaceholder.typicode.com';
+import { useTodosQuery } from "./api/query";
+import Todo from "./todo";
 
 function App() {
+  const { data, isSuccess, isError } = useTodosQuery();
+
+  if (isError) {
+    return (
+        <p>Error...</p>
+    );
+  }
+
   return (
     <>
-      <h1>App</h1>
-      
+      {isSuccess ? (
+        <div>
+          {data.map((todo) => (
+            <Todo key={todo.id} todo={todo} />
+          ))}
+        </div>
+      ) : (
+        <p>Loading...</p>
+      )}
     </>
-  )
+  ); 
 }
 
-export default App
+export default App;
